@@ -1,5 +1,6 @@
 {{- if .Values.serviceAccount.role }}
-{{- $roleName := default (include "app_name") .Values.serviceAccount.role.name }}
+{{- $app_name := include "main.app_name" . }}
+{{- $roleName := default $app_name .Values.serviceAccount.role.name }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
