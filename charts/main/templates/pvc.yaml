@@ -1,0 +1,19 @@
+{{- range $volume := .Values.volumes }}
+{{- if $volume.createPVC }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ $volume.name }}
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ required "The size to be requested is required for the volume {{$volume.name}}" $volume.size }}
+  storageClassName: {{ required "The Storage class is required for the Volume {{$volume.name}}" $volume.storageClassName }}
+  {{- if eq $volume.storageClassName "longhorn" }}
+  volumeName: {{ $volume.name }}
+  {{- end}}
+{{- end}}
+{{- end}}

@@ -1,0 +1,155 @@
+image:
+  repo: gcarrarom/landing
+  tag: 0.0.0
+  pullSecrets: []
+
+## These are available to overwrite the command and arguments when running the containers
+command: []
+args: []
+
+## For testing purposes only
+# This will generate a testing.yaml template to troubleshoot/check how the values are set
+# Useful if you want to check how the template works with a command like:
+# helm template . --debug --output-dir testing
+testing: false
+
+port: 80
+
+## Name to be used on the resources created
+# This overwrites the default behaviour. 
+# Please check _helper.tpl file on the templates folder for more information
+# name: 
+
+
+deployment:
+  replicas: 1
+  enabled: true
+
+# Whether or not to recreate the pods after the complete deletion of the previous pod.
+# Especially useful for sqlite database applications or ReadWriteOnce applications
+recreate: false
+
+## Set environment variables for your app
+# env:
+#   ENV_VAR: value
+#   ANOTHER: Variable
+env: {}
+
+# Volumes to be mounted from PVCs like this: - defaults to pvc if isNfs = false
+# - name: vault-pvc # name of the PVC or secret to be mounted.
+#   path: /data # path where the pvc will be mounted at
+#   isSecret: false # Whether or not to use the name to attach the secret with the same name.
+#   isNfs: true # wheter to connect using nfs or not
+#   nfsPath: /data # path to mount at for the NFS server
+#   server: some.server.com # nfs server
+#   createPVC: false # Whether or not to create a PVC
+#   storageClassName: nfs-client
+#   size: 10G # size of the pvc to be created if createPVC = true
+volumes: []
+
+# Environment Variables from Secrets, can be set like this:
+# - name: "ENV_VAR" #name of the environment variable
+#   secretName: super-secret # Name of the kubernetes secret
+#   key: password # key of the secret to be used.
+#   secretRef: false # Whether to use it as a secret ref or not (uses all keys as environment variables)
+### Example as secretRef:
+# - secretRef: true
+#   secretName: super-secret
+### Example as key ref
+# - name: "ENV_VAR"
+#   secretName: super-secret
+#   key: password
+envFromSecret: []
+
+# Environment Variables from ConfigMaps, can be set like this:
+# - name: "ENV_VAR" #name of the environment variable
+#   configMapName: fancy-konfig # Name of the kubernetes configMap
+#   key: hostname # key of the configmap to be used.
+#   configMapRef: false # Whether to use it as a configMap ref or not (uses all keys as environment variables)
+### Example as configMapRef:
+# - configMapRef: true
+#   configMapName: fancy-konfig
+### Example as key ref
+# - name: "ENV_VAR"
+#   configMapName: fancy-konfig
+#   key: hostname
+envFromConfigMap: []
+
+domain: fancywhale.ca
+## Set the url value if you want to replace the entire hostname
+# url: something.fancywhale.ca
+
+## Sets the annotation on the ingress controller for cert-manager cluster issuer
+clusterissuer: letsencrypt
+
+ingress:
+  ## Class name only sets the ingressClassName directive. Older Ingress Annotations are not supported.
+  className: nginx
+  enabled: true
+  # Annotations to be added to the ingress resource.
+  annotations: {}
+  ## Auth annotations should be the ones included for authentication only. 
+  # Those will be ignored on the noauth ingress to be created
+  # That will allow for endpoints without authentication.
+  authAnnotations: {}
+  paths: ["/"]
+  # Paths where you don't want to use your external authentication
+  # This is usually useful to use on status/health pages and some APIs
+  noauthPaths: []
+
+# Extra configuration for the Service.
+# This is to add extra ports for your service that are not the default set at the root of this chart
+service:
+  enabled: true
+  protocol: TCP
+  # You can use ClusterIP or LoadBalancer Services
+  # If you use LoadBalancer services, you could set the static IP address using:
+  # loadBalancerIP: <ip address>
+  # Make sure to research how that's going to be allocated.
+  type: ClusterIP
+  # Extra ports if you need more than 1
+  # Example:
+  # - port: 80
+  #   protocol: UDP
+  ports: []
+
+resources:
+  requests: {}
+  limits: {}
+
+###
+# This is where you can define your node selector. 
+# If you need to use GCP's node selector, you can use:
+# gcp: <computer-class>
+# Where computer class could be: "Scale-Out", "Balanced" or "General-purpose"
+nodeSelector:
+  gcp: false
+  enabled: false
+  labels: {}
+  # labels: 
+  #   disk: ssd
+
+###
+# This is where you can define your Security Context settings
+# You can setup the fsgroup setting by using this:
+# fsgroup: <group ID>
+# Where you can set any group ID that you need.
+securityContext:
+  enabled: false
+
+###
+# Service account related values
+serviceAccount:
+  enabled: false
+  ## Role
+  #role:
+  #  rules:
+  #  - apiGroups: [""]
+  #    resources: ["pods"]
+  #    verbs: ["get"]
+  ## ClusterRole
+  #clusterRole:
+  #  rules:
+  #  - apiGroups: [""]
+  #    resources: ["pods"]
+  #    verbs: ["get"]

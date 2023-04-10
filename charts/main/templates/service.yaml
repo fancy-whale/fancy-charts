@@ -1,0 +1,23 @@
+{{- $app_name := include "main.app_name" . }}
+{{- if .Values.service.enabled }}
+kind: Service
+apiVersion: v1
+metadata:
+  name:  {{ $app_name }}
+spec:
+  selector:
+    app: {{ $app_name }}
+  type:  {{.Values.service.type}}
+  {{- if and (eq .Values.service.type "LoadBalancer") (.Values.service.loadBalancerIP) }}
+  loadBalancerIP: {{.Values.service.loadBalancerIP}}
+  {{- end }}
+  ports:
+  - port:  {{ .Values.port }}
+    targetPort:  {{ .Values.port }}
+    protocol: {{.Values.service.protocol}}
+  {{- range $port := .Values.service.ports }}
+  - port: {{ $port.port }}
+    targetPort: {{ $port.port }}
+    protocol: {{default $port.protocol "TCP"}}
+  {{- end }}
+{{- end }}

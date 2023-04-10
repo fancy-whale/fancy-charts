@@ -1,0 +1,13 @@
+{{- $app_name := include "main.app_name" . }}
+This Application was deployed using FancyCharts by FancyWhale (https://fancywhale.ca).
+{{- if .Values.ingress.enabled }}
+Your application is running at:
+  {{ if .Values.url }}{{ .Values.url }}{{ else }}{{ $app_name }}.{{ .Values.domain }}{{ end }}
+{{- end }}
+{{- if .Values.service.enabled }}
+If you want to troubleshoot your application via port-forward, you can create a tunnel with the following command:
+  {{ if or (eq (default .Values.port 80) 80) (eq (default .Values.port 80) 443) }}sudo {{ end }}kubectl port-forward svc/{{ $app_name }} {{ .Values.port }}
+{{- if or (eq (default .Values.port 80) 80) (eq (default .Values.port 80) 443)}}
+P.S.: sudo was included due to the usage of port 443 or 80
+{{- end }}
+{{- end }}
