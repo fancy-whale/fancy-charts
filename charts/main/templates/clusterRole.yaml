@@ -11,10 +11,10 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: {{(include "app_name")}}
+  name: {{$app_name}}
 subjects:
 - kind: ServiceAccount
-  name: {{(include "app_name")}}
+  name: {{$app_name}}
   namespace: {{.Release.Namespace}}
 roleRef:
   kind: ClusterRole
