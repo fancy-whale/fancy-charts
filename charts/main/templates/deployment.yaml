@@ -23,6 +23,7 @@ spec:
       {{- end }}
       {{- if .Values.securityContext.enabled }}
       securityContext:
+        privileged: {{.Values.securityContext.privileged}}
         {{- if .Values.securityContext.fsgroup }}
         fsGroup: {{.Values.securityContext.fsgroup}}
         {{- end}}

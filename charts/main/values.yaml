@@ -140,6 +140,7 @@ nodeSelector:
 # fsgroup: <group ID>
 # Where you can set any group ID that you need.
 securityContext:
+  privileged: false
   enabled: false
 
 ###
