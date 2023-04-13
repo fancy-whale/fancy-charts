@@ -48,7 +48,12 @@ spec:
         - name: {{ $each.name }}
           secret:
             secretName: {{ $each.name }}
-        {{- else}}
+        {{- else if $each.isHostPath }}
+        - name: {{ $each.name }}
+            hostPath:
+              path: {{ $each.path }}
+              type: {{ default "Directory" $each.hostVolumeType }}
+        {{- else }}
         - name: {{$each.name}}
           persistentVolumeClaim:
             claimName: {{$each.name}}
