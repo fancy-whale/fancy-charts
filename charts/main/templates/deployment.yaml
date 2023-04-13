@@ -50,9 +50,9 @@ spec:
             secretName: {{ $each.name }}
         {{- else if $each.isHostPath }}
         - name: {{ $each.name }}
-            hostPath:
-              path: {{ $each.path }}
-              type: {{ default "Directory" $each.hostVolumeType }}
+          hostPath:
+            path: {{ $each.path }}
+            type: {{ default "Directory" $each.hostVolumeType }}
         {{- else }}
         - name: {{$each.name}}
           persistentVolumeClaim:
