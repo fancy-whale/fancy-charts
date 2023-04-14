@@ -142,6 +142,7 @@ nodeSelector:
 securityContext:
   privileged: false
   enabled: false
+  runAsUserEnabled: false # Disabled by default
   # runAsUser: # Disabled by default
 
 ###

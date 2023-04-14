@@ -27,9 +27,9 @@ spec:
         {{- if .Values.securityContext.fsgroup }}
         fsGroup: {{.Values.securityContext.fsgroup}}
         {{- end}}
-        {{- if .Values.securityContext.runAsUser -}}
+        {{- if .Values.securityContext.runAsUserEnabled }}
         runAsUser: {{ .Values.securityContext.runAsUser }}
-        {{- end -}}
+        {{- end }}
       {{- end}}
       {{- if .Values.nodeSelector.enabled }}
       nodeSelector:
