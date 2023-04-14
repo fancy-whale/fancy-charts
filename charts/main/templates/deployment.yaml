@@ -92,6 +92,10 @@ spec:
             {{$sub_key}}: {{$sub_value}}
           {{- end}}
         {{- end }}
+        {{- if .Values.securityContext.enabled }}
+        securityContext:
+          privileged: {{.Values.securityContext.privileged}}
+        {{- end}}
         {{- if or (not (eq (len .Values.env) 0)) (not (eq (len .Values.envFromSecret) 0)) }}
         envFrom:
         {{- range $item := .Values.envFromSecret }}
