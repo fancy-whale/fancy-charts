@@ -48,6 +48,7 @@ spec:
           nfs:
             path: {{ $each.nfsPath }}
             server: {{ $each.server }}
+            readOnly: {{ default "false" $each.readOnly }}
         {{- else if $each.isSecret }}
         - name: {{ $each.name }}
           secret:
@@ -57,10 +58,12 @@ spec:
           hostPath:
             path: {{ $each.path }}
             type: {{ default "Directory" $each.hostVolumeType }}
+            readOnly: {{ default "false" $each.readOnly }}
         {{- else }}
         - name: {{$each.name}}
           persistentVolumeClaim:
             claimName: {{$each.name}}
+            readOnly: {{ default "false" $each.readOnly }}
         {{- end }}
         {{- end }}
       {{- end }}
