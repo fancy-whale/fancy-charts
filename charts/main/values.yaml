@@ -142,6 +142,7 @@ nodeSelector:
 securityContext:
   privileged: false
   enabled: false
+  # runAsUser: # Disabled by default
 
 ###
 # Service account related values
