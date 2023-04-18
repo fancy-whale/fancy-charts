@@ -39,6 +39,7 @@ env: {}
 # - name: vault-pvc # name of the PVC or secret to be mounted.
 #   path: /data # path where the pvc will be mounted at
 #   isSecret: false # Whether or not to use the name to attach the secret with the same name.
+#   isConfigMap: false # Whether or not to use the name to attach the ConfigMap with the same name.
 #   isNfs: true # wheter to connect using nfs or not
 #   nfsPath: /data # path to mount at for the NFS server
 #   server: some.server.com # nfs server
@@ -46,6 +47,7 @@ env: {}
 #   storageClassName: nfs-client
 #   size: 10G # size of the pvc to be created if createPVC = true
 #   readOnly: false # by default the readOnly flag is set to false
+#   subPath: # by default there is no subpath set
 # You can also use hostpaths - although never recommended, they could provide some nice implementations of sockets and directories:
 # - name: containerd-sock
 #   path: /run/k3s/containerd/containerd.sock

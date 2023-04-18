@@ -53,6 +53,10 @@ spec:
         - name: {{ $each.name }}
           secret:
             secretName: {{ $each.name }}
+        {{- else if $each.isConfigMap }}
+        - name: {{ $each.name }}
+          configMap:
+            name: {{ $each.name }}
         {{- else if $each.isHostPath }}
         - name: {{ $each.name }}
           hostPath:
@@ -142,6 +146,9 @@ spec:
         {{- range $each := .Values.volumes }}
         - mountPath: {{$each.path}}
           name: {{$each.name}}
+          {{- if $each.subPath }}
+          subPath: {{$each.subPath}}
+          {{- end}}
           {{- if or $each.isSecret $each.isReadOnly }}
           readOnly: true
           {{- end}}
