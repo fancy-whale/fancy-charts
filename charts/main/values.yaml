@@ -48,6 +48,9 @@ env: {}
 #   size: 10G # size of the pvc to be created if createPVC = true
 #   readOnly: false # by default the readOnly flag is set to false
 #   subPath: # by default there is no subpath set
+#   items: # available when using secrets or configmaps
+#   - key: key-name # name of the key inside of the secret or configmap data
+#     path: path/of/something # name/path for the key to be renamed when mounting
 # You can also use hostpaths - although never recommended, they could provide some nice implementations of sockets and directories:
 # - name: containerd-sock
 #   path: /run/k3s/containerd/containerd.sock

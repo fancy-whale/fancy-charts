@@ -53,10 +53,28 @@ spec:
         - name: {{ $each.name }}
           secret:
             secretName: {{ $each.name }}
+            {{- if gt (len $each.items) 0 }}
+            items:
+              {{- range $i, $item := $each.items }}
+              - key: {{$item.key}}
+              {{- if $item.path }}
+                path: {{$item.path}}
+              {{- end }}
+              {{- end }}
+            {{- end}}
         {{- else if $each.isConfigMap }}
         - name: {{ $each.name }}
           configMap:
             name: {{ $each.name }}
+            {{- if gt (len $each.items) 0 }}
+            items:
+              {{- range $i, $item := $each.items }}
+              - key: {{$item.key}}
+              {{- if $item.path }}
+                path: {{$item.path}}
+              {{- end }}
+              {{- end }}
+            {{- end}}
         {{- else if $each.isHostPath }}
         - name: {{ $each.name }}
           hostPath:
