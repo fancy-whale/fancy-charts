@@ -4,8 +4,8 @@ plane_frontend:
   enabled: true
   url: plane.fancywhale.ca
   image:
-    repo: ghcr.io/makeplane/plane-frontend
-    tag: &plane-version develop
+    repo: makeplane/plane-frontend
+    tag: &plane-version 0.5-dev
   port: 3000
   command:
   - node 
@@ -28,7 +28,7 @@ plane_backend:
   ingress:
     paths: ["/api"]
   image:
-    repo: ghcr.io/makeplane/plane-backend
+    repo: makeplane/plane-backend
     tag: *plane-version
   port: 8000
   envFromSecret:
@@ -68,7 +68,7 @@ plane_worker:
   ingress:
     enabled: false
   image:
-    repo: ghcr.io/makeplane/plane-worker
+    repo: makeplane/plane-worker
     tag: *plane-version
   command: 
   - ./bin/worker
