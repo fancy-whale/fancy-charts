@@ -1,0 +1,33 @@
+apiVersion: v2
+name: plane
+description: A Helm chart for Plane
+maintainers:
+  - name: Gui Martins
+    email: gmartins@fancywhale.ca
+    url: https://fancywhale.ca
+type: application
+version: 0.1.0
+appVersion: "1.16.0"
+dependencies:
+- alias: plane_frontend
+  condition: plane_frontend.enabled
+  name: &chart-name main
+  version: &chart-version 0.4.2
+- alias: plane_backend
+  condition: plane_backend.enabled
+  name: *chart-name
+  version: *chart-version
+- alias: plane_worker
+  condition: plane_worker.enabled
+  name: *chart-name
+  version: *chart-version
+- alias: redis
+  condition: redis.enabled
+  name: redis
+  repository: &bitnami-repo https://charts.bitnami.com/bitnami
+  version: 17.9.3
+- alias: postgresql
+  condition: postgresql.enabled
+  name: postgresql
+  repository: *bitnami-repo
+  version: 12.2.7
