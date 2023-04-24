@@ -1,3 +1,4 @@
+type: Deployment
 image:
   repo: gcarrarom/landing
   tag: 0.0.0
@@ -24,6 +25,11 @@ port: 80
 deployment:
   replicas: 1
   enabled: true
+
+cronjob:
+  schedule: 0 0 13 * 5
+  enabled: true
+  restartPolicy: Never
 
 # Whether or not to recreate the pods after the complete deletion of the previous pod.
 # Especially useful for sqlite database applications or ReadWriteOnce applications

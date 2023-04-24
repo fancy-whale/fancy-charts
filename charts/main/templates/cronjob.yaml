@@ -1,0 +1,180 @@
+{{- $app_name := include "main.app_name" . }}
+{{- if (eq .Values.type "CronJob")}}
+{{- if .Values.cronjob.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ $app_name }}
+spec:
+  schedule: {{ .Values.cronjob.schedule  | quote}}
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: {{ $app_name }}
+        spec:
+          restartPolicy: {{ .Values.cronjob.restartPolicy }}
+          {{- if .Values.serviceAccount.enabled }}
+          serviceAccountName: {{$app_name}}
+          {{- end }}
+          {{- if .Values.securityContext.enabled }}
+          securityContext:
+            privileged: {{.Values.securityContext.privileged}}
+            {{- if .Values.securityContext.fsgroup }}
+            fsGroup: {{.Values.securityContext.fsgroup}}
+            {{- end}}
+            {{- if .Values.securityContext.runAsUserEnabled }}
+            runAsUser: {{ .Values.securityContext.runAsUser }}
+            {{- end }}
+          {{- end}}
+          {{- if .Values.nodeSelector.enabled }}
+          nodeSelector:
+            {{- if .Values.nodeSelector.gcp }}
+            cloud.google.com/compute-class: {{ .Values.nodeSelector.gcp | quote}}
+            {{- end}}
+            {{- range $key, $val := .Values.nodeSelector.labels }}
+            {{$key}}: {{$val | quote}}
+            {{- end }}
+          {{- end}}
+          {{- if not (eq (len .Values.volumes) 0) }}
+          volumes:
+            {{- range $each := .Values.volumes }}
+            {{- if $each.isNfs }}
+            - name: {{ $each.name }}
+              nfs:
+                path: {{ $each.nfsPath }}
+                server: {{ $each.server }}
+                readOnly: {{ default "false" $each.readOnly }}
+            {{- else if $each.isSecret }}
+            - name: {{ $each.name }}
+              secret:
+                secretName: {{ $each.name }}
+                {{- if gt (len $each.items) 0 }}
+                items:
+                  {{- range $i, $item := $each.items }}
+                  - key: {{$item.key}}
+                  {{- if $item.path }}
+                    path: {{$item.path}}
+                  {{- end }}
+                  {{- end }}
+                {{- end}}
+            {{- else if $each.isConfigMap }}
+            - name: {{ $each.name }}
+              configMap:
+                name: {{ $each.name }}
+                {{- if gt (len $each.items) 0 }}
+                items:
+                  {{- range $i, $item := $each.items }}
+                  - key: {{$item.key}}
+                  {{- if $item.path }}
+                    path: {{$item.path}}
+                  {{- end }}
+                  {{- end }}
+                {{- end}}
+            {{- else if $each.isHostPath }}
+            - name: {{ $each.name }}
+              hostPath:
+                path: {{ $each.path }}
+                type: {{ default "Directory" $each.hostVolumeType }}
+                readOnly: {{ default "false" $each.readOnly }}
+            {{- else }}
+            - name: {{$each.name}}
+              persistentVolumeClaim:
+                claimName: {{$each.name}}
+                readOnly: {{ default "false" $each.readOnly }}
+            {{- end }}
+            {{- end }}
+          {{- end }}
+          {{- if not (eq (len .Values.image.pullSecrets) 0) }}
+          imagePullSecrets:
+          {{- range $each := .Values.image.pullSecrets }}
+          - name: {{ $each }}
+          {{- end}}
+          {{- end }}
+          containers:
+          - name: {{ $app_name }}
+            image: {{ .Values.image.repo }}:{{ .Values.image.tag }}
+            {{- if gt (len .Values.command) 0 }}
+            command: 
+            {{- range $i, $val := .Values.command }}
+            - {{$val | quote}}
+            {{- end }}
+            {{- end }}
+            {{- if gt (len .Values.args) 0 }}
+            args:
+            {{- range $i, $val := .Values.args }}
+            - {{$val | quote}}
+            {{- end }}
+            {{- end }}
+            resources:
+            {{- range $key, $value := .Values.resources }}
+              {{$key}}:
+              {{- range $sub_key, $sub_value := $value}}
+                {{$sub_key}}: {{$sub_value}}
+              {{- end}}
+            {{- end }}
+            {{- if .Values.securityContext.enabled }}
+            securityContext:
+              privileged: {{.Values.securityContext.privileged}}
+            {{- end}}
+            {{- if or (not (eq (len .Values.env) 0)) (not (eq (len .Values.envFromSecret) 0)) }}
+            envFrom:
+            {{- range $item := .Values.envFromSecret }}
+            {{- if $item.secretRef }}
+            - secretRef:
+                name: {{$item.secretName}}
+            {{- end }}
+            {{- end }}
+            {{- range $item := .Values.envFromConfigMap }}
+            {{- if $item.configMapRef }}
+            - configMapRef:
+                name: {{$item.configMapName}}
+            {{- end }}
+            {{- end }}
+            env:
+            {{- range $key, $val := .Values.env }}
+            - name: {{$key}}
+              value: {{$val | quote}}
+            {{- end }}
+            {{- range $item := .Values.envFromSecret }}
+            {{- if not $item.secretRef }}
+            - name: {{$item.name}}
+              valueFrom:
+                secretKeyRef:
+                  name: {{$item.secretName}}
+                  key: {{$item.key}}
+            {{- end }}
+            {{- end }}
+            {{- range $item := .Values.envFromConfigMap }}
+            {{- if not $item.configMapRef }}
+            - name: {{$item.name}}
+              valueFrom:
+                configMapKeyRef:
+                  name: {{$item.configMapName}}
+                  key: {{$item.key}}
+            {{- end }}
+            {{- end }}
+            {{- end }}
+            {{- if not (eq (len .Values.volumes) 0) }}
+            volumeMounts:
+            {{- range $each := .Values.volumes }}
+            - mountPath: {{$each.path}}
+              name: {{$each.name}}
+              {{- if $each.subPath }}
+              subPath: {{$each.subPath}}
+              {{- end}}
+              {{- if or $each.isSecret $each.isReadOnly }}
+              readOnly: true
+              {{- end}}
+            {{- end }}
+            {{- end }}
+            ports:
+            - containerPort: {{ .Values.port }}
+              protocol: {{.Values.service.protocol}}
+            {{- range $port := .Values.service.ports }}
+            - containerPort: {{ $port.port }}
+              protocol: {{default $port.protocol "TCP"}}
+            {{- end }}
+{{- end}}
+{{- end}}

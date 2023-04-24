@@ -1,4 +1,5 @@
 {{- $app_name := include "main.app_name" . }}
+{{- if (eq .Values.type "Deployment")}}
 {{- if .Values.deployment.enabled}}
 apiVersion: apps/v1
 kind: Deployment
@@ -179,4 +180,5 @@ spec:
         - containerPort: {{ $port.port }}
           protocol: {{default $port.protocol "TCP"}}
         {{- end }}
+{{- end }}
 {{- end }}
