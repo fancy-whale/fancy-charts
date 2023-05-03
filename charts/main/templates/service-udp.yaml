@@ -16,6 +16,11 @@ spec:
   loadBalancerIP: {{.Values.service.loadBalancerIP}}
   {{- end }}
   ports:
+  {{- if eq (upper .Values.service.protocol) "UDP" }}
+  - port:  {{ .Values.port }}
+    targetPort:  {{ .Values.port }}
+    protocol: {{.Values.service.protocol}}
+  {{- end }}
   {{- range $port := .Values.service.ports }}
   {{- if eq (upper $port.protocol) "UDP" }}
   - port: {{ $port.port }}

@@ -1,5 +1,5 @@
 {{- $app_name := include "main.app_name" . }}
-{{- if .Values.service.enabled }}
+{{- if and .Values.service.enabled (eq (upper .Values.service.protocol) "TCP") }}
 kind: Service
 apiVersion: v1
 metadata:
