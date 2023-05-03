@@ -1,5 +1,9 @@
 {{- $app_name := include "main.app_name" . }}
-{{- if and .Values.service.enabled (eq (upper .Values.service.protocol) "TCP") }}
+{{- $hasTcp := false}}
+{{- range $port := .Values.service.ports }}
+{{- if eq (upper $port.protocol) "TCP"}}{{$hasTcp = true}}{{ end }}
+{{- end }}
+{{- if and .Values.service.enabled (or (eq (upper .Values.service.protocol) "TCP") ($hasTcp)) }}
 kind: Service
 apiVersion: v1
 metadata:
