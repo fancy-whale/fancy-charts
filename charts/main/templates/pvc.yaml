@@ -10,8 +10,8 @@ spec:
   - ReadWriteOnce
   resources:
     requests:
-      storage: {{ required "The size to be requested is required for the volume {{$volume.name}}" $volume.size }}
-  storageClassName: {{ required "The Storage class is required for the Volume {{$volume.name}}" $volume.storageClassName }}
+      storage: {{ required (printf "The size to be requested is required for the volume %s" $volume.name) $volume.size }}
+  storageClassName: {{ required (printf "The Storage class is required for the Volume %s" $volume.name) $volume.storageClassName }}
   {{- if eq $volume.storageClassName "longhorn" }}
   volumeName: {{ $volume.name }}
   {{- end}}
