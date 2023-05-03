@@ -1,7 +1,7 @@
 {{- $app_name := include "main.app_name" . }}
 {{- $hasUdp := false}}
 {{- range $port := .Values.service.ports }}
-{{- if eq (upper $port.protocol "UDP")}}{{$hasUdp = true}}{{ end }}
+{{- if eq (upper $port.protocol) "UDP"}}{{$hasUdp = true}}{{ end }}
 {{- end }}
 {{- if and (.Values.service.enabled) ($hasUdp) }}
 kind: Service
@@ -21,6 +21,9 @@ spec:
   - port: {{ $port.port }}
     targetPort: {{ $port.port }}
     protocol: UDP
+  {{- if $port.nodePort }}
+    nodePort: {{ $port.nodePort }}
+  {{- end }}
   {{- end }}
   {{- end }}
 {{- end }}
