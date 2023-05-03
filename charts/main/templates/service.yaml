@@ -15,6 +15,9 @@ spec:
   - port:  {{ .Values.port }}
     targetPort:  {{ .Values.port }}
     protocol: {{.Values.service.protocol}}
+  {{- if .Values.service.nodePort }}
+    nodePort: {{ .Values.service.nodePort }}
+  {{- end }}
   {{- range $port := .Values.service.ports }}
   {{- if eq (upper $port.protocol) "TCP" }}
   - port: {{ $port.port }}
