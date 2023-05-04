@@ -6,7 +6,7 @@ kind: Deployment
 metadata:
   name: {{ $app_name }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.deployment.replicas }}
   {{- if .Values.recreate }}
   strategy:
     type: Recreate
