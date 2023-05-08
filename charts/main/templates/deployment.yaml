@@ -178,7 +178,7 @@ spec:
           protocol: {{.Values.service.protocol}}
         {{- range $port := .Values.service.ports }}
         - containerPort: {{ $port.port }}
-          protocol: {{default $port.protocol "TCP"}}
+          protocol: {{ $port.protocol }}
         {{- end }}
 {{- end }}
 {{- end }}
