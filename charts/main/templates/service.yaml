@@ -7,11 +7,11 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name:  {{ $app_name }}
+  name: {{ $app_name }}
 spec:
   selector:
     app: {{ $app_name }}
-  type:  {{.Values.service.type}}
+  type: {{.Values.service.type}}
   {{- if and (eq .Values.service.type "LoadBalancer") (.Values.service.loadBalancerIP) }}
   loadBalancerIP: {{.Values.service.loadBalancerIP}}
   {{- end }}
@@ -28,7 +28,7 @@ spec:
   - port: {{ $port.port }}
     targetPort: {{ $port.port }}
     protocol: TCP
-    name: {{$port.protocol}}-{{ $port.port }}
+    name: {{ lower $port.protocol }}-{{ $port.port }}
   {{- if $port.nodePort }}
     nodePort: {{ $port.nodePort }}
   {{- end }}
