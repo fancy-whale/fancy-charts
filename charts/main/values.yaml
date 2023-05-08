@@ -124,6 +124,7 @@ service:
   # loadBalancerIP: <ip address>
   # Make sure to research how that's going to be allocated.
   type: ClusterIP
+  udpType: ClusterIP
   # Extra ports if you need more than 1
   # Example:
   # - port: 80

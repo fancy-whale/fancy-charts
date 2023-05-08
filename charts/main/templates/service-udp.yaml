@@ -11,9 +11,9 @@ metadata:
 spec:
   selector:
     app: {{ $app_name }}
-  type:  {{.Values.service.type}}
-  {{- if and (eq .Values.service.type "LoadBalancer") (.Values.service.loadBalancerIP) }}
-  loadBalancerIP: {{.Values.service.loadBalancerIP}}
+  type:  {{.Values.service.udpType}}
+  {{- if and (eq .Values.service.udpType "LoadBalancer") (.Values.service.udpLoadBalancerIP) }}
+  loadBalancerIP: {{.Values.service.udpLoadBalancerIP}}
   {{- end }}
   ports:
   {{- if eq (upper .Values.service.protocol) "UDP" }}
