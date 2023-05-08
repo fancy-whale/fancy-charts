@@ -20,6 +20,7 @@ spec:
   - port:  {{ .Values.port }}
     targetPort:  {{ .Values.port }}
     protocol: {{.Values.service.protocol}}
+    name: {{ lower .Values.service.protocol }}-{{ .Values.port }}
   {{- if .Values.service.nodePort }}
     nodePort: {{ .Values.service.nodePort }}
   {{- end }}
@@ -29,6 +30,7 @@ spec:
   - port: {{ $port.port }}
     targetPort: {{ $port.port }}
     protocol: UDP
+    name: {{$port.protocol}}-{{ $port.port }}
   {{- if $port.nodePort }}
     nodePort: {{ $port.nodePort }}
   {{- end }}

@@ -16,9 +16,10 @@ spec:
   loadBalancerIP: {{.Values.service.loadBalancerIP}}
   {{- end }}
   ports:
-  - port:  {{ .Values.port }}
-    targetPort:  {{ .Values.port }}
+  - port: {{ .Values.port }}
+    targetPort: {{ .Values.port }}
     protocol: {{.Values.service.protocol}}
+    name: {{ lower .Values.service.protocol }}-{{ .Values.port }}
   {{- if .Values.service.nodePort }}
     nodePort: {{ .Values.service.nodePort }}
   {{- end }}
@@ -27,6 +28,7 @@ spec:
   - port: {{ $port.port }}
     targetPort: {{ $port.port }}
     protocol: TCP
+    name: {{$port.protocol}}-{{ $port.port }}
   {{- if $port.nodePort }}
     nodePort: {{ $port.nodePort }}
   {{- end }}
